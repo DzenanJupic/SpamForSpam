@@ -3,7 +3,6 @@ to = [
     "eberhardqbygzma@htitbtc.com",
     "hannebdprmsxfarber@atracosmetic.co",
     "traugotthgyfash@1nosnore-de.com",
-    "marvinarhgapc@okulcv.com",
     "adelexbtdwym@lcohub.com",
     "eleonorakhwkxtrkramer@ornekmodel.co",
     "aneliehxfzgyk@movsse.com",

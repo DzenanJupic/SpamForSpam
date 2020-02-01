@@ -1,16 +1,20 @@
 import string
 import random
-
-me = "SpamForSpam876235@gmail.com"
-password = "vPO406W*Lp"
+from os import path
 
 
 def random_str(n=10):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
 
 
-subject = f"SPAM FOR SPAM!\t{random_str()}"
+me = "SpamForSpam876235@gmail.com"
+password = "vPO406W*Lp"
+
+
+subject = f"SPAM FOR SPAM!"
+files = 2
 file_name = "image.png"
+file_size = path.getsize(file_name)
 body = \
     "Hey guys,\nhope you like the pictures!" \
     "\n\nSend 'please stop' if you stop spamming. " \

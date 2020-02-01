@@ -26,6 +26,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\info\OneDrive\Programms\Pyhton\SpamForSpam" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="SpamForSpam" />
@@ -177,7 +182,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1580588018395</updated>
-      <workItem from="1580588029347" duration="7056000" />
+      <workItem from="1580588029347" duration="9228000" />
     </task>
     <servers />
   </component>
@@ -189,9 +194,9 @@
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1700" y="478" key="FileChooserDialogImpl/0.0.2560.1440@0.0.2560.1440" timestamp="1580588794492" />
-    <state x="1421" y="367" key="SettingsEditor" timestamp="1580589881298">
+    <state x="1421" y="367" key="SettingsEditor" timestamp="1580595985549">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
-    <state x="1421" y="367" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1580589881298" />
+    <state x="1421" y="367" key="SettingsEditor/0.0.2560.1440@0.0.2560.1440" timestamp="1580595985549" />
   </component>
 </project>
