@@ -1,10 +1,32 @@
 from smtplib import SMTP
 from email.message import EmailMessage
+from time import sleep, time
+import math
 
 from email_list import *
 from data import *
 
-MAX_ERR = 10
+MAX_ERR = 17
+
+
+def convert_size(size_bytes):
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    name = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, name)
+    s = round(size_bytes / p, 2)
+    return f"{s}{size_name[name]}"
+
+
+def convert_time(sec_time):
+    if sec_time == 0:
+        return "0s"
+    time_name = ("s", "min", "h")
+    name = int(math.floor(math.log(sec_time, 60)))
+    p = math.pow(60, name)
+    s = round(sec_time / p, 2)
+    return f"{s}{time_name[name]}"
 
 
 def get_int(min_value=0, max_value=1, input_msg=None, default=None):
@@ -48,6 +70,8 @@ if rounds == 0:
 # basic message
 print("\n\ncreate mail", end="\t")
 msg = EmailMessage()
+msg['From'] = "SpamForSpam"
+msg['Bcc'] = ', '.join(to)
 msg['Subject'] = subject
 msg.set_content(body)
 print("finished")
@@ -66,39 +90,59 @@ message = msg.as_string()
 print(
     "\n\nSummary:"
     f"\n\tsubject: {subject}"
-    "\n\tbody: " + body.rstrip('\n').rstrip('\t') +
+    "\n\tbody: " + body.replace('\n', ' ').replace('\t', ' ') +
     f"\n\tfile: {files} x {round(file_size/1024/1024)}MB ({file_name})"
 )
 
 # send message
-print("\n\n\n\nstart sending\n\n")
+print("\n\n\n\nstart sending")
 err_count = 0
+counter = 0
 i = 1
-r = 1
+t_start = time()
 while err_count < MAX_ERR:
     try:
-        with SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(me, password)
+        with SMTP(server, port) as smtp:
+            print(f"\n\nstart tls:\t{smtp.starttls()}")
+            print(f"login:\t\t{smtp.login(me, password)}\n")
 
             for i in range(i, rounds+1):
-                print(f"start round {i}/{rounds}")
-                for r, receiver in zip(range(r, len(to)+1), to):
-                    print(f"\tsend email to: {receiver}")
-                    server.sendmail(me, receiver, message)
+                data = file_size * files * len(to)
+                print(f"\nround {i}/{rounds}:")
+                t1 = time()
+                response = smtp.sendmail(me, to, message)
+                t2 = time()
+                print(
+                    f"\ttime:\t{convert_time(t2 - t1)}"
+                    f"\n\tmails:\t{len(to)}"
+                    f"\n\tdata:\t{convert_size(data)}"
+                    f"\t({convert_size(data/(t2-t1))}/s)"
+                    f"\n\tresponse:\t{response}",
+                    end=""
+                )
+                counter += len(to)
             break
 
     except KeyboardInterrupt:
         break
     except:
+        print("\tfailed")
+        if err_count < MAX_ERR:
+            for _ in range(0, 2**err_count):
+                sleep(1)
         err_count += 1
+t_end = time()
 
 if err_count == MAX_ERR:
-    print("something went wrong!")
+    print("\nsomething went wrong!")
     exit()
 
+data = file_size*files*counter
 print(
     "\n\nfinished sending mails successfully!"
-    f"\ntotal send mails:\t{(len(to)*(i-1)) + r}"
-    f"\ntotal send data:\t{round( (file_size* ((len(to)*(i-1)) + r) ) /1024/1024 , 2)}MB"
+    f"\ntotal time:\t{convert_time(t_end-t_start)}"
+    f"\ntotal rounds:\t{rounds}"
+    f"\ntotal mails:\t{counter}"
+    f"\ntotal data:\t{convert_size(data)}"
+    f"\t({convert_size(data/(t_end-t_start))}/s)\n\n"
 )

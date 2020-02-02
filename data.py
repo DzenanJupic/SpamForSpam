@@ -1,5 +1,6 @@
 import string
 import random
+import os
 from os import path
 
 
@@ -7,9 +8,12 @@ def random_str(n=10):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
 
 
-me = "SpamForSpam876235@gmail.com"
-password = "vPO406W*Lp"
-
+server = os.getenv('EMAIL_SERVER', 'smtp.gmail.com')
+port = os.getenv('EMAIL_PORT', 587)
+if port == "None":
+    port = None
+me = os.getenv('EMAIL_SENDER', 'SpamForSpam876235@gmail.com')
+password = os.getenv('EMAIL_PASSWORD', 'vPO406W*Lp')
 
 subject = f"SPAM FOR SPAM!"
 files = 2
