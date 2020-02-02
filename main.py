@@ -1,6 +1,5 @@
 from smtplib import SMTP
 from email.message import EmailMessage
-from num2words import num2words
 
 from email_list import *
 from data import *
@@ -67,43 +66,39 @@ message = msg.as_string()
 print(
     "\n\nSummary:"
     f"\n\tsubject: {subject}"
-    "\n\tbody: " + body.strip('\n').strip('\t') +
+    "\n\tbody: " + body.rstrip('\n').rstrip('\t') +
     f"\n\tfile: {files} x {round(file_size/1024/1024)}MB ({file_name})"
 )
 
 # send message
 print("\n\n\n\nstart sending\n\n")
 err_count = 0
-try:
-    with SMTP("smtp.gmail.com", 587) as server:
-        server.starttls()
-        server.login(me, password)
+i = 1
+r = 1
+while err_count < MAX_ERR:
+    try:
+        with SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(me, password)
 
-        while err_count < MAX_ERR:
-            try:
-                for i in range(1, rounds+1):
-                    print(f"start round {i}/{rounds}")
+            for i in range(i, rounds+1):
+                print(f"start round {i}/{rounds}")
+                for r, receiver in zip(range(r, len(to)+1), to):
+                    print(f"\tsend email to: {receiver}")
+                    server.sendmail(me, receiver, message)
+            break
 
-                    for receiver in to:
-                        print(f"\tsend email to: {receiver}")
-                        server.sendmail(me, receiver, message)
-                break
-            except KeyboardInterrupt:
-                rounds = i
-                break
-            except:
-                err_count += 1
+    except KeyboardInterrupt:
+        break
+    except:
+        err_count += 1
 
-except KeyboardInterrupt:
-    pass
-except:
+if err_count == MAX_ERR:
     print("something went wrong!")
     exit()
-finally:
-    print(
-        "\n\nfinished sending mails "
-        f"{num2words(rounds)} {'times' if rounds>1 else 'time'} "
-        f"to {num2words(len(to))} {'receivers' if len(to)>1 else 'receiver'} "
-        "successfully!"
-        f"\ntotal send data: {round((file_size*rounds*len(to))/1024/1024, 2)}MB"
-    )
+
+print(
+    "\n\nfinished sending mails successfully!"
+    f"\ntotal send mails:\t{(len(to)*(i-1)) + r}"
+    f"\ntotal send data:\t{round( (file_size* ((len(to)*(i-1)) + r) ) /1024/1024 , 2)}MB"
+)
